@@ -187,31 +187,56 @@
     <section class="status-card">
       <h2>⚡ Performance Metrics</h2>
       <div class="metrics-grid">
-        <div class="metric-card">
+        <div class="metric-card" data-metric="hit-rate">
           <div class="metric-icon">🎯</div>
           <div class="metric-label">Cache Hit Rate</div>
           <div id="cache-hit-rate" class="metric-value">0%</div>
+          <div class="metric-sparkline" id="hit-rate-sparkline"></div>
         </div>
-        <div class="metric-card">
+        <div class="metric-card" data-metric="response-time">
           <div class="metric-icon">⚡</div>
           <div class="metric-label">Avg Response Time</div>
           <div id="avg-response-time" class="metric-value">0ms</div>
+          <div class="metric-sparkline" id="response-time-sparkline"></div>
         </div>
-        <div class="metric-card">
+        <div class="metric-card" data-metric="data-saved">
           <div class="metric-icon">💾</div>
           <div class="metric-label">Data Saved</div>
           <div id="data-saved" class="metric-value">0 KB</div>
+          <div class="metric-sparkline" id="data-saved-sparkline"></div>
         </div>
-        <div class="metric-card">
+        <div class="metric-card" data-metric="sync-ops">
           <div class="metric-icon">🔄</div>
           <div class="metric-label">Sync Operations</div>
           <div id="sync-operations" class="metric-value">0</div>
+          <div class="metric-sparkline" id="sync-ops-sparkline"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Activity Feed -->
+    <section class="status-card">
+      <h2>📡 Live Activity Feed</h2>
+      <p class="section-description">Real-time events and operations happening in ShadowCache</p>
+      <div id="activity-feed" class="activity-feed">
+        <div class="activity-item activity-system">
+          <div class="activity-icon">🌑</div>
+          <div class="activity-content">
+            <div class="activity-title">System Ready</div>
+            <div class="activity-time">Just now</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Toast Notifications Container -->
     <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+    
+    <!-- Particle Effects -->
+    <canvas id="particles-canvas"></canvas>
   </div>
 
   <!-- Footer -->
