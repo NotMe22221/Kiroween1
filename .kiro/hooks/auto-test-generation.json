@@ -1,0 +1,14 @@
+{
+  "name": "Auto-generate tests for SDK changes",
+  "description": "Automatically generates test scaffolding when SDK code is modified",
+  "trigger": {
+    "type": "file-save",
+    "pattern": "packages/*/src/**/*.ts",
+    "exclude": "**/*.test.ts"
+  },
+  "action": {
+    "type": "agent-message",
+    "message": "A file in the SDK has been modified: {{filePath}}. Please review if new tests are needed for the changes. If the file doesn't have a corresponding .test.ts file, consider creating one. Ensure all new public APIs and functions have appropriate unit tests and property-based tests where applicable."
+  },
+  "enabled": true
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@shadowcache/storage",
+  "version": "0.1.0",
+  "description": "Storage abstraction with fallback chain (IndexedDB → LocalStorage → Memory)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node ../../scripts/build.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4",
+    "fast-check": "^3.15.0",
+    "fake-indexeddb": "^5.0.2"
+  }
+}

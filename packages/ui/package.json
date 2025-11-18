@@ -1,0 +1,51 @@
+{
+  "name": "@shadowcache/ui",
+  "version": "0.1.0",
+  "description": "Shadow Mode UI - React and Web Components for offline indicators",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react.js",
+      "types": "./dist/react.d.ts"
+    },
+    "./web-component": {
+      "import": "./dist/web-component.js",
+      "types": "./dist/web-component.d.ts"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css",
+    "dist/*.css"
+  ],
+  "scripts": {
+    "build": "node ../../scripts/build.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "react": "^18.2.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4",
+    "fast-check": "^3.15.0"
+  }
+}

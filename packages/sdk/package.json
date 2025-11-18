@@ -1,0 +1,60 @@
+{
+  "name": "@shadowcache/sdk",
+  "version": "0.1.0",
+  "description": "ShadowCache SDK - Main entry point and orchestration layer",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./core": {
+      "import": "./dist/core.js",
+      "types": "./dist/core.d.ts"
+    },
+    "./validation": {
+      "import": "./dist/validation.js",
+      "types": "./dist/validation.d.ts"
+    },
+    "./matcher": {
+      "import": "./dist/matcher.js",
+      "types": "./dist/matcher.d.ts"
+    },
+    "./serialization": {
+      "import": "./dist/serialization.js",
+      "types": "./dist/serialization.d.ts"
+    },
+    "./security": {
+      "import": "./dist/security.js",
+      "types": "./dist/security.d.ts"
+    },
+    "./html-parser": {
+      "import": "./dist/html-parser.js",
+      "types": "./dist/html-parser.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node ../../scripts/build.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@shadowcache/storage": "0.1.0",
+    "@shadowcache/router": "0.1.0",
+    "@shadowcache/predictor": "0.1.0",
+    "@shadowcache/sync": "0.1.0",
+    "@shadowcache/analytics": "0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4",
+    "fast-check": "^3.15.0"
+  }
+}

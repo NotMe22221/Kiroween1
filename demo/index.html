@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShadowCache Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌑 ShadowCache Demo</h1>
+      <p class="subtitle">Modern offline-first caching with predictive intelligence</p>
+    </header>
+
+    <!-- Connectivity Status -->
+    <section class="status-card">
+      <h2>Connectivity Status</h2>
+      <div class="status-indicator">
+        <div id="connectivity-status" class="status-badge offline">
+          <span class="status-dot"></span>
+          <span id="connectivity-text">Offline</span>
+        </div>
+        <button id="toggle-offline" class="btn btn-secondary">Toggle Offline Mode</button>
+      </div>
+    </section>
+
+    <!-- Cache Status Dashboard -->
+    <section class="status-card">
+      <h2>Cache Status</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Storage Used</div>
+          <div id="storage-used" class="stat-value">0 KB</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Cached Resources</div>
+          <div id="cached-count" class="stat-value">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Sync Status</div>
+          <div id="sync-status" class="stat-value">Idle</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Storage Level</div>
+          <div id="storage-level" class="stat-value">Memory</div>
+        </div>
+      </div>
+      <div class="storage-bar">
+        <div id="storage-progress" class="storage-progress" style="width: 0%"></div>
+      </div>
+      <div class="storage-info">
+        <span id="storage-percentage">0%</span> of available storage
+      </div>
+    </section>
+
+    <!-- Sync Controls -->
+    <section class="status-card">
+      <h2>Sync Controls</h2>
+      <div class="sync-controls">
+        <button id="manual-sync" class="btn btn-primary">
+          <span class="btn-icon">🔄</span>
+          Trigger Manual Sync
+        </button>
+        <button id="clear-cache" class="btn btn-danger">
+          <span class="btn-icon">🗑️</span>
+          Clear Cache
+        </button>
+      </div>
+      
+      <!-- Sync Progress -->
+      <div id="sync-progress-container" class="sync-progress-container" style="display: none;">
+        <h3>Sync Progress</h3>
+        <div class="progress-bar">
+          <div id="sync-progress-bar" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="sync-stats">
+          <div class="sync-stat">
+            <span class="sync-stat-label">Synced:</span>
+            <span id="sync-synced">0</span>
+          </div>
+          <div class="sync-stat">
+            <span class="sync-stat-label">Conflicts:</span>
+            <span id="sync-conflicts">0</span>
+          </div>
+          <div class="sync-stat">
+            <span class="sync-stat-label">Bytes:</span>
+            <span id="sync-bytes">0</span>
+          </div>
+          <div class="sync-stat">
+            <span class="sync-stat-label">Duration:</span>
+            <span id="sync-duration">0ms</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cached Resources List -->
+    <section class="status-card">
+      <h2>Cached Resources</h2>
+      <div class="resource-filters">
+        <input type="text" id="resource-filter" placeholder="Filter resources..." class="filter-input">
+        <select id="sort-by" class="filter-select">
+          <option value="priority">Sort by Priority</option>
+          <option value="age">Sort by Age</option>
+          <option value="size">Sort by Size</option>
+          <option value="url">Sort by URL</option>
+        </select>
+      </div>
+      <div id="resource-list" class="resource-list">
+        <div class="empty-state">No cached resources yet. Try fetching some data!</div>
+      </div>
+    </section>
+
+    <!-- Test API Endpoints -->
+    <section class="status-card">
+      <h2>Test API Endpoints</h2>
+      <div class="api-controls">
+        <button class="btn btn-primary" onclick="fetchData('/api/users')">
+          Fetch Users
+        </button>
+        <button class="btn btn-primary" onclick="fetchData('/api/posts')">
+          Fetch Posts
+        </button>
+        <button class="btn btn-primary" onclick="fetchData('/api/comments')">
+          Fetch Comments
+        </button>
+        <button class="btn btn-primary" onclick="fetchData('/api/large-data')">
+          Fetch Large Data
+        </button>
+      </div>
+      <div id="api-response" class="api-response"></div>
+    </section>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

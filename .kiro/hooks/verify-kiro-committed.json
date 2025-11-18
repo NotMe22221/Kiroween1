@@ -1,0 +1,17 @@
+{
+  "name": "Verify .kiro directory is committed",
+  "description": "Ensures the .kiro directory and its contents are included in version control",
+  "trigger": {
+    "type": "agent-message-sent"
+  },
+  "action": {
+    "type": "shell-command",
+    "command": "git ls-files .kiro --error-unmatch",
+    "onError": {
+      "type": "agent-message",
+      "message": "⚠️ Warning: The .kiro directory is not tracked in version control. This directory contains important specification documents, design files, and task lists that should be committed.\n\nPlease run:\n```\ngit add .kiro\ngit commit -m \"Add .kiro specification files\"\n```\n\nThe .kiro directory should be committed to ensure:\n- Specifications are versioned with the code\n- Team members have access to design documents\n- Task lists are synchronized across the team"
+    }
+  },
+  "enabled": false,
+  "notes": "This hook is disabled by default. Enable it when you want to enforce .kiro directory tracking in git."
+}

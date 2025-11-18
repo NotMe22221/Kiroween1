@@ -1,0 +1,13 @@
+{
+  "name": "Auto-generate documentation from spec updates",
+  "description": "Regenerates API documentation when specification documents are updated",
+  "trigger": {
+    "type": "file-save",
+    "pattern": ".kiro/specs/**/*.md"
+  },
+  "action": {
+    "type": "agent-message",
+    "message": "The specification document {{filePath}} has been updated. Please review the changes and update the following documentation if needed:\n\n1. API documentation in docs/API.md\n2. Configuration documentation in docs/CONFIGURATION.md\n3. Examples in docs/EXAMPLES.md\n4. Main README.md\n\nEnsure all new requirements, interfaces, and configuration options are properly documented with examples."
+  },
+  "enabled": true
+}

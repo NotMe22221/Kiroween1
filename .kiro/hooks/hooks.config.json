@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "description": "Agent hooks configuration for ShadowCache project",
+  "hooks": [
+    {
+      "id": "auto-test-generation",
+      "file": "auto-test-generation.json",
+      "category": "quality",
+      "priority": "high",
+      "requirements": ["12.1"]
+    },
+    {
+      "id": "auto-doc-generation",
+      "file": "auto-doc-generation.json",
+      "category": "documentation",
+      "priority": "medium",
+      "requirements": ["12.2"]
+    },
+    {
+      "id": "verify-kiro-committed",
+      "file": "verify-kiro-committed.json",
+      "category": "version-control",
+      "priority": "low",
+      "requirements": ["12.3"]
+    }
+  ],
+  "categories": {
+    "quality": {
+      "name": "Quality Assurance",
+      "description": "Hooks that ensure code quality and test coverage"
+    },
+    "documentation": {
+      "name": "Documentation",
+      "description": "Hooks that maintain documentation synchronization"
+    },
+    "version-control": {
+      "name": "Version Control",
+      "description": "Hooks that enforce version control best practices"
+    }
+  },
+  "settings": {
+    "globalEnabled": true,
+    "notificationLevel": "info",
+    "maxConcurrentHooks": 3
+  }
+}
