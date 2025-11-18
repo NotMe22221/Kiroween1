@@ -665,6 +665,280 @@ function updatePredictionStats() {
   document.getElementById('prediction-confidence').textContent = `${predictionStats.confidence}%`;
 }
 
+// Activity Feed System
+const activityFeed = [];
+const MAX_ACTIVITIES = 10;
+
+function addActivity(icon, title, type = 'info') {
+  const activity = {
+    icon,
+    title,
+    time: new Date(),
+    type
+  };
+  
+  activityFeed.unshift(activity);
+  if (activityFeed.length > MAX_ACTIVITIES) {
+    activityFeed.pop();
+  }
+  
+  renderActivityFeed();
+}
+
+function renderActivityFeed() {
+  const container = document.getElementById('activity-feed');
+  if (!container) return;
+  
+  container.innerHTML = activityFeed.map(activity => {
+    const timeAgo = getTimeAgo(activity.time);
+    const typeClass = `activity-${activity.type}`;
+    
+    return `
+      <div class="activity-item ${typeClass}">
+        <div class="activity-icon">${activity.icon}</div>
+        <div class="activity-content">
+          <div class="activity-title">${activity.title}</div>
+          <div class="activity-time">${timeAgo}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getTimeAgo(date) {
+  const seconds = Math.floor((new Date() - date) / 1000);
+  if (seconds < 5) return 'Just now';
+  if (seconds < 60) return `${seconds}s ago`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  return `${hours}h ago`;
+}
+
+// Update activity feed times
+setInterval(() => {
+  if (activityFeed.length > 0) {
+    renderActivityFeed();
+  }
+}, 5000);
+
+// Sparkline Charts
+const sparklineData = {
+  hitRate: [],
+  responseTime: [],
+  dataSaved: [],
+  syncOps: []
+};
+
+function updateSparklines() {
+  const hitRate = performanceMetrics.totalRequests > 0 
+    ? ((performanceMetrics.cacheHits / performanceMetrics.totalRequests) * 100)
+    : 0;
+  
+  const avgResponseTime = performanceMetrics.responseTimes.length > 0
+    ? (performanceMetrics.responseTimes.reduce((a, b) => a + b, 0) / performanceMetrics.responseTimes.length)
+    : 0;
+  
+  sparklineData.hitRate.push(hitRate);
+  sparklineData.responseTime.push(avgResponseTime);
+  sparklineData.dataSaved.push(performanceMetrics.dataSaved / 1024); // KB
+  sparklineData.syncOps.push(performanceMetrics.syncOperations);
+  
+  // Keep only last 20 data points
+  Object.keys(sparklineData).forEach(key => {
+    if (sparklineData[key].length > 20) {
+      sparklineData[key].shift();
+    }
+  });
+  
+  renderSparklines();
+}
+
+function renderSparklines() {
+  renderSparkline('hit-rate-sparkline', sparklineData.hitRate, '#10b981');
+  renderSparkline('response-time-sparkline', sparklineData.responseTime, '#6366f1');
+  renderSparkline('data-saved-sparkline', sparklineData.dataSaved, '#8b5cf6');
+  renderSparkline('sync-ops-sparkline', sparklineData.syncOps, '#ec4899');
+}
+
+function renderSparkline(elementId, data, color) {
+  const element = document.getElementById(elementId);
+  if (!element || data.length < 2) return;
+  
+  const width = element.offsetWidth || 200;
+  const height = 30;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data, 0);
+  const range = max - min || 1;
+  
+  const points = data.map((value, index) => {
+    const x = (index / (data.length - 1)) * width;
+    const y = height - ((value - min) / range) * height;
+    return `${x},${y}`;
+  }).join(' ');
+  
+  element.innerHTML = `
+    <svg width="${width}" height="${height}" style="display: block;">
+      <polyline
+        points="${points}"
+        fill="none"
+        stroke="${color}"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  `;
+}
+
+// Confetti celebration
+function triggerConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  
+  const ctx = canvas.getContext('2d');
+  const confetti = [];
+  const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'];
+  
+  for (let i = 0; i < 100; i++) {
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      size: Math.random() * 5 + 5,
+      speedY: Math.random() * 3 + 2,
+      speedX: Math.random() * 2 - 1,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      rotationSpeed: Math.random() * 10 - 5
+    });
+  }
+  
+  function animateConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    confetti.forEach((piece, index) => {
+      ctx.save();
+      ctx.translate(piece.x, piece.y);
+      ctx.rotate(piece.rotation * Math.PI / 180);
+      ctx.fillStyle = piece.color;
+      ctx.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size);
+      ctx.restore();
+      
+      piece.y += piece.speedY;
+      piece.x += piece.speedX;
+      piece.rotation += piece.rotationSpeed;
+      
+      if (piece.y > canvas.height) {
+        confetti.splice(index, 1);
+      }
+    });
+    
+    if (confetti.length > 0) {
+      requestAnimationFrame(animateConfetti);
+    } else {
+      canvas.style.display = 'none';
+    }
+  }
+  
+  animateConfetti();
+}
+
+// Particle background effect
+function initParticles() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '0';
+  
+  const ctx = canvas.getContext('2d');
+  const particles = [];
+  const particleCount = 50;
+  
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2 + 1,
+      speedX: Math.random() * 0.5 - 0.25,
+      speedY: Math.random() * 0.5 - 0.25,
+      opacity: Math.random() * 0.5 + 0.2
+    });
+  }
+  
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(particle => {
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity})`;
+      ctx.fill();
+      
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+      
+      if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+      if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+    });
+    
+    requestAnimationFrame(animateParticles);
+  }
+  
+  animateParticles();
+  
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
+
+// Enhanced fetch with activity logging
+const originalFetchData = window.fetchData;
+window.fetchData = async function(endpoint) {
+  addActivity('🔄', `Fetching ${endpoint}`, 'info');
+  await originalFetchData(endpoint);
+};
+
+// Enhanced sync with confetti
+const originalPerformSync = performSync;
+performSync = async function() {
+  await originalPerformSync();
+  if (Math.random() > 0.5) {
+    triggerConfetti();
+    addActivity('🎉', 'Sync completed with celebration!', 'success');
+  }
+};
+
+// Enhanced clear cache
+const originalClearCache = clearCache;
+clearCache = async function() {
+  await originalClearCache();
+  addActivity('🗑️', 'Cache cleared successfully', 'warning');
+};
+
+// Update sparklines periodically
+setInterval(updateSparklines, 2000);
+
+// Initialize particles on load
+setTimeout(initParticles, 1000);
+
+// Add initial activities
+setTimeout(() => {
+  addActivity('🚀', 'ShadowCache initialized', 'success');
+  addActivity('💾', 'Storage fallback chain ready', 'info');
+  addActivity('🧠', 'Predictive engine started', 'info');
+}, 2000);
+
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initDemo);
