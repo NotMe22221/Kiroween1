@@ -3,14 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShadowCache Demo</title>
+  <title>ShadowCache Demo - Offline-First Caching Engine</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌑</text></svg>">
 </head>
 <body>
+  <!-- Animated Background -->
+  <div class="animated-bg">
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+  </div>
+
   <div class="container">
     <header>
-      <h1>🌑 ShadowCache Demo</h1>
+      <div class="logo-container">
+        <div class="logo-shadow">🌑</div>
+        <h1>ShadowCache</h1>
+      </div>
       <p class="subtitle">Modern offline-first caching with predictive intelligence</p>
+      <div class="feature-badges">
+        <span class="badge">🚀 Zero Config</span>
+        <span class="badge">🧠 Predictive</span>
+        <span class="badge">📡 Offline-First</span>
+        <span class="badge">🔄 Delta Sync</span>
+      </div>
     </header>
 
     <!-- Connectivity Status -->
@@ -114,25 +131,103 @@
 
     <!-- Test API Endpoints -->
     <section class="status-card">
-      <h2>Test API Endpoints</h2>
+      <h2>🧪 Test API Endpoints</h2>
+      <p class="section-description">Try fetching data, then toggle offline mode to see caching in action!</p>
       <div class="api-controls">
         <button class="btn btn-primary" onclick="fetchData('/api/users')">
+          <span class="btn-icon">👥</span>
           Fetch Users
         </button>
         <button class="btn btn-primary" onclick="fetchData('/api/posts')">
+          <span class="btn-icon">📝</span>
           Fetch Posts
         </button>
         <button class="btn btn-primary" onclick="fetchData('/api/comments')">
+          <span class="btn-icon">💬</span>
           Fetch Comments
         </button>
         <button class="btn btn-primary" onclick="fetchData('/api/large-data')">
+          <span class="btn-icon">📦</span>
           Fetch Large Data
         </button>
       </div>
       <div id="api-response" class="api-response"></div>
     </section>
+
+    <!-- Predictive Caching Visualization -->
+    <section class="status-card">
+      <h2>🧠 Predictive Caching Engine</h2>
+      <p class="section-description">Watch as ShadowCache learns your patterns and predicts what you'll need next</p>
+      <div class="prediction-container">
+        <div class="prediction-stats">
+          <div class="prediction-stat">
+            <div class="prediction-label">Patterns Learned</div>
+            <div id="patterns-learned" class="prediction-value">0</div>
+          </div>
+          <div class="prediction-stat">
+            <div class="prediction-label">Predictions Made</div>
+            <div id="predictions-made" class="prediction-value">0</div>
+          </div>
+          <div class="prediction-stat">
+            <div class="prediction-label">Prefetch Queue</div>
+            <div id="prefetch-queue" class="prediction-value">0</div>
+          </div>
+          <div class="prediction-stat">
+            <div class="prediction-label">Confidence</div>
+            <div id="prediction-confidence" class="prediction-value">0%</div>
+          </div>
+        </div>
+        <div id="prediction-graph" class="prediction-graph">
+          <div class="graph-placeholder">Navigation patterns will appear here as you use the app</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Performance Metrics -->
+    <section class="status-card">
+      <h2>⚡ Performance Metrics</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">🎯</div>
+          <div class="metric-label">Cache Hit Rate</div>
+          <div id="cache-hit-rate" class="metric-value">0%</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">⚡</div>
+          <div class="metric-label">Avg Response Time</div>
+          <div id="avg-response-time" class="metric-value">0ms</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">💾</div>
+          <div class="metric-label">Data Saved</div>
+          <div id="data-saved" class="metric-value">0 KB</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🔄</div>
+          <div class="metric-label">Sync Operations</div>
+          <div id="sync-operations" class="metric-value">0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
   </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Built with ❤️ for the offline-first web</p>
+      <div class="footer-links">
+        <a href="https://github.com/shadowcache/shadowcache" target="_blank">GitHub</a>
+        <span>•</span>
+        <a href="../docs/API.md">Documentation</a>
+        <span>•</span>
+        <a href="../README.md">About</a>
+      </div>
+    </div>
+  </footer>
 
   <script type="module" src="app.js"></script>
 </body>
-</html>
+</html>""

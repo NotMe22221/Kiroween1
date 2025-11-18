@@ -127,11 +127,12 @@ console.log(`Synced ${result.synced} changes in ${result.duration}ms`);
 
 ## 📚 Documentation
 
-### Getting Started
-- [Quick Start](#-quick-start) - Get up and running in minutes
+### 🚀 Getting Started
+- **[Quick Start Guide](QUICK_START.md)** - Get up and running in under 5 minutes!
 - [Installation](#-installation) - npm, yarn, or pnpm
+- [Demo Application](#-demo-application) - Interactive demo with all features
 
-### Guides
+### 📖 Guides
 - [API Reference](docs/API.md) - Complete API documentation with all methods and types
 - [Configuration Guide](docs/CONFIGURATION.md) - Comprehensive configuration options and examples
 - [Usage Examples](docs/EXAMPLES.md) - Common use cases and implementation patterns
@@ -140,10 +141,15 @@ console.log(`Synced ${result.synced} changes in ${result.duration}ms`);
 - [Performance Optimization](docs/PERFORMANCE.md) - Best practices and optimization strategies
 - [Bundle Optimization](docs/BUNDLE-OPTIMIZATION.md) - Tree-shaking, code splitting, and size optimization
 
-### Additional Resources
+### 🤝 Contributing
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute to ShadowCache
+- [Changelog](CHANGELOG.md) - Version history and release notes
+- [Code Standards](.kiro/steering/shadowcache-standards.md) - Coding conventions and best practices
+
+### 📋 Additional Resources
 - [Browser Compatibility](#-browser-compatibility) - Supported browsers and requirements
-- [Demo Application](#-demo-application) - Live examples and interactive demos
 - [Architecture](#-architecture) - System design and module structure
+- [Project Structure](#-project-structure) - Monorepo organization
 
 ## 📦 Bundle Size & Tree-Shaking
 
@@ -303,29 +309,46 @@ See [.kiro/hooks/README.md](.kiro/hooks/README.md) for configuration details.
 
 ## 🎮 Demo Application
 
-A fully functional demo application is available in the `demo/` directory. The demo showcases:
+A **stunning, fully functional** demo application is available in the `demo/` directory. The demo showcases:
 
-- Real-time connectivity status with online/offline detection
-- Cache status dashboard with storage usage visualization
-- Manual sync controls with progress tracking
-- Cached resources list with filtering and sorting
-- Test API endpoints demonstrating different caching strategies
-- Modern, responsive UI with Shadow Mode theme
+### ✨ Key Features
+- 🌐 **Real-time connectivity status** with animated online/offline detection
+- 📊 **Cache status dashboard** with storage usage visualization and live metrics
+- 🔄 **Manual sync controls** with progress tracking and delta statistics
+- 📦 **Cached resources list** with filtering, sorting, and metadata display
+- 🧪 **Test API endpoints** demonstrating all caching strategies
+- 🧠 **Predictive caching visualization** showing pattern learning in real-time
+- ⚡ **Performance metrics** tracking cache hits, response times, and data saved
+- 🎨 **Modern, responsive UI** with Shadow Mode theme and smooth animations
+- 🍞 **Toast notifications** for user feedback on all actions
 
-### Running the Demo
+### 🚀 Quick Start
 
 ```bash
 # Build all packages first
 npm run build
 
-# Start the demo
+# Start the demo (Windows)
 cd demo
-npm start
+start-demo.bat
+
+# Or use npx serve
+cd demo
+npx serve . -p 3000
 ```
 
 Then open your browser to `http://localhost:3000`
 
-See [demo/README.md](demo/README.md) for detailed instructions and features.
+### 🎯 What to Try
+1. **Fetch data** from different endpoints while online
+2. **Toggle offline mode** and see cached resources still work
+3. **Watch predictive caching** learn your patterns
+4. **Monitor performance** metrics in real-time
+5. **Trigger manual sync** and see delta statistics
+6. **Filter and sort** cached resources
+7. **Clear cache** and start fresh
+
+See [demo/README.md](demo/README.md) for detailed instructions, testing guide, and troubleshooting.
 
 ## 🤝 Contributing
 

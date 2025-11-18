@@ -3,7 +3,29 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Modern offline-first caching engine with predictive intelligence",
+  "description": "Modern offline-first caching engine with predictive intelligence, delta synchronization, and comprehensive SDK",
+  "keywords": [
+    "cache",
+    "offline",
+    "pwa",
+    "service-worker",
+    "predictive",
+    "sync",
+    "offline-first",
+    "indexeddb",
+    "localstorage",
+    "delta-sync"
+  ],
+  "homepage": "https://github.com/shadowcache/shadowcache#readme",
+  "bugs": {
+    "url": "https://github.com/shadowcache/shadowcache/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shadowcache/shadowcache.git"
+  },
+  "license": "MIT",
+  "author": "ShadowCache Contributors",
   "workspaces": [
     "packages/*"
   ],
@@ -13,7 +35,12 @@
     "build:analyze": "npm run build:prod && node scripts/analyze-bundle.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc --noEmit"
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "demo": "cd demo && npx serve . -p 3000",
+    "clean": "npm run clean --workspaces && del /s /q dist node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
@@ -24,6 +51,7 @@
     "vitest": "^1.0.4"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

@@ -34,6 +34,20 @@ let shadowCache = null;
 let storageManager = null;
 let deltaSync = null;
 let cachedResources = [];
+let performanceMetrics = {
+  cacheHits: 0,
+  cacheMisses: 0,
+  totalRequests: 0,
+  responseTimes: [],
+  dataSaved: 0,
+  syncOperations: 0
+};
+let predictionStats = {
+  patternsLearned: 0,
+  predictionsMade: 0,
+  prefetchQueue: 0,
+  confidence: 0
+};
 
 // Initialize the demo
 async function initDemo() {
@@ -99,11 +113,30 @@ async function initDemo() {
     
     // Start periodic updates
     setInterval(updateCacheStatus, 2000);
+    setInterval(updatePerformanceMetrics, 1000);
+    setInterval(updatePredictionStats, 1000);
+    
+    // Simulate some prediction learning
+    simulatePredictionLearning();
+    
+    showSuccess('ShadowCache initialized successfully! Try fetching some data.');
     
   } catch (error) {
     console.error('Failed to initialize demo:', error);
     showError('Initialization failed: ' + error.message);
   }
+}
+
+// Simulate prediction learning for demo purposes
+function simulatePredictionLearning() {
+  setInterval(() => {
+    if (cachedResources.length > 0) {
+      predictionStats.patternsLearned = Math.min(predictionStats.patternsLearned + 1, cachedResources.length * 2);
+      predictionStats.predictionsMade = Math.min(predictionStats.predictionsMade + Math.floor(Math.random() * 3), 50);
+      predictionStats.prefetchQueue = Math.floor(Math.random() * 5);
+      predictionStats.confidence = Math.min(30 + (predictionStats.patternsLearned * 5), 95);
+    }
+  }, 5000);
 }
 
 // Setup event listeners
@@ -208,6 +241,7 @@ async function performSync() {
   const progressBar = document.getElementById('sync-progress-bar');
   
   try {
+    showInfo('Starting synchronization...');
     progressContainer.style.display = 'block';
     progressBar.style.width = '0%';
     
@@ -224,11 +258,15 @@ async function performSync() {
     clearInterval(progressInterval);
     progressBar.style.width = '100%';
     
+    performanceMetrics.syncOperations++;
+    
     // Update sync stats
     document.getElementById('sync-synced').textContent = result.synced;
     document.getElementById('sync-conflicts').textContent = result.conflicts;
     document.getElementById('sync-bytes').textContent = formatBytes(result.bytesTransferred);
     document.getElementById('sync-duration').textContent = `${result.duration}ms`;
+    
+    showSuccess(`Sync complete! ${result.synced} items synced, ${formatBytes(result.bytesTransferred)} transferred`);
     
     // Hide progress after 3 seconds
     setTimeout(() => {
@@ -247,16 +285,37 @@ async function performSync() {
 // Clear cache
 async function clearCache() {
   try {
+    showInfo('Clearing cache...');
+    
     if (shadowCache) {
       await shadowCache.clearCache();
     }
     if (storageManager) {
       await storageManager.clear();
     }
+    
     cachedResources = [];
+    performanceMetrics = {
+      cacheHits: 0,
+      cacheMisses: 0,
+      totalRequests: 0,
+      responseTimes: [],
+      dataSaved: 0,
+      syncOperations: 0
+    };
+    predictionStats = {
+      patternsLearned: 0,
+      predictionsMade: 0,
+      prefetchQueue: 0,
+      confidence: 0
+    };
+    
     await updateCacheStatus();
     renderResourceList();
-    showSuccess('Cache cleared successfully');
+    updatePerformanceMetrics();
+    updatePredictionStats();
+    
+    showSuccess('Cache cleared successfully! All metrics reset.');
   } catch (error) {
     console.error('Failed to clear cache:', error);
     showError('Failed to clear cache: ' + error.message);
@@ -266,9 +325,11 @@ async function clearCache() {
 // Fetch data from mock API
 window.fetchData = async function(endpoint) {
   const responseDiv = document.getElementById('api-response');
+  const startTime = performance.now();
   
   try {
     responseDiv.textContent = 'Loading...';
+    performanceMetrics.totalRequests++;
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, isOnline ? 500 : 100));
@@ -277,23 +338,61 @@ window.fetchData = async function(endpoint) {
       // Try to get from cache
       const cached = await getCachedData(endpoint);
       if (cached) {
+        const endTime = performance.now();
+        const responseTime = endTime - startTime;
+        performanceMetrics.responseTimes.push(responseTime);
+        performanceMetrics.cacheHits++;
+        
         responseDiv.textContent = JSON.stringify(cached, null, 2);
-        showSuccess('Loaded from cache (offline mode)');
+        showSuccess(`Loaded from cache in ${responseTime.toFixed(0)}ms (offline mode)`);
         return;
       } else {
+        performanceMetrics.cacheMisses++;
         throw new Error('Resource not available offline');
       }
     }
     
+    // Check if we have cached data first
+    const cached = await getCachedData(endpoint);
+    if (cached) {
+      performanceMetrics.cacheHits++;
+      const endTime = performance.now();
+      const responseTime = endTime - startTime;
+      performanceMetrics.responseTimes.push(responseTime);
+      
+      responseDiv.textContent = JSON.stringify(cached, null, 2);
+      showInfo(`Loaded from cache in ${responseTime.toFixed(0)}ms (cache-first strategy)`);
+      
+      // Revalidate in background
+      setTimeout(async () => {
+        try {
+          const freshData = await mockFetch(endpoint);
+          await cacheData(endpoint, freshData);
+          showInfo('Cache updated with fresh data');
+        } catch (e) {
+          console.error('Background revalidation failed:', e);
+        }
+      }, 100);
+      
+      return;
+    }
+    
     // Fetch from mock API
+    performanceMetrics.cacheMisses++;
     const data = await mockFetch(endpoint);
     
+    const endTime = performance.now();
+    const responseTime = endTime - startTime;
+    performanceMetrics.responseTimes.push(responseTime);
+    
     // Cache the data
+    const dataSize = JSON.stringify(data).length;
+    performanceMetrics.dataSaved += dataSize;
     await cacheData(endpoint, data);
     
     // Display response
     responseDiv.textContent = JSON.stringify(data, null, 2);
-    showSuccess('Data fetched and cached successfully');
+    showSuccess(`Data fetched and cached in ${responseTime.toFixed(0)}ms (${formatBytes(dataSize)})`);
     
     // Update resource list
     await updateResourceList();
@@ -302,6 +401,7 @@ window.fetchData = async function(endpoint) {
     console.error('Fetch failed:', error);
     responseDiv.textContent = `Error: ${error.message}`;
     showError(error.message);
+    performanceMetrics.cacheMisses++;
   }
 };
 
@@ -492,12 +592,77 @@ function formatAge(ms) {
 
 function showSuccess(message) {
   console.log('✓', message);
-  // Could add toast notification here
+  showToast('Success', message, 'success');
 }
 
 function showError(message) {
   console.error('✗', message);
-  // Could add toast notification here
+  showToast('Error', message, 'error');
+}
+
+function showWarning(message) {
+  console.warn('⚠', message);
+  showToast('Warning', message, 'warning');
+}
+
+function showInfo(message) {
+  console.info('ℹ', message);
+  showToast('Info', message, 'info');
+}
+
+// Toast notification system
+function showToast(title, message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  const icons = {
+    success: '✓',
+    error: '✗',
+    warning: '⚠',
+    info: 'ℹ'
+  };
+  
+  toast.innerHTML = `
+    <div class="toast-icon">${icons[type] || icons.info}</div>
+    <div class="toast-content">
+      <div class="toast-title">${title}</div>
+      <div class="toast-message">${message}</div>
+    </div>
+    <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+  `;
+  
+  container.appendChild(toast);
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    toast.style.animation = 'slideInRight 0.3s ease-out reverse';
+    setTimeout(() => toast.remove(), 300);
+  }, 5000);
+}
+
+// Update performance metrics display
+function updatePerformanceMetrics() {
+  const hitRate = performanceMetrics.totalRequests > 0 
+    ? ((performanceMetrics.cacheHits / performanceMetrics.totalRequests) * 100).toFixed(1)
+    : 0;
+  
+  const avgResponseTime = performanceMetrics.responseTimes.length > 0
+    ? (performanceMetrics.responseTimes.reduce((a, b) => a + b, 0) / performanceMetrics.responseTimes.length).toFixed(0)
+    : 0;
+  
+  document.getElementById('cache-hit-rate').textContent = `${hitRate}%`;
+  document.getElementById('avg-response-time').textContent = `${avgResponseTime}ms`;
+  document.getElementById('data-saved').textContent = formatBytes(performanceMetrics.dataSaved);
+  document.getElementById('sync-operations').textContent = performanceMetrics.syncOperations;
+}
+
+// Update prediction stats display
+function updatePredictionStats() {
+  document.getElementById('patterns-learned').textContent = predictionStats.patternsLearned;
+  document.getElementById('predictions-made').textContent = predictionStats.predictionsMade;
+  document.getElementById('prefetch-queue').textContent = predictionStats.prefetchQueue;
+  document.getElementById('prediction-confidence').textContent = `${predictionStats.confidence}%`;
 }
 
 // Initialize when DOM is ready
