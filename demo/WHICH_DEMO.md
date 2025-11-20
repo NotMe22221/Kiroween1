@@ -21,9 +21,9 @@
 - **Just open in browser and click buttons!**
 
 ### 2. **index.html** (Full Demo)
-- **Status:** ⚠️ Requires package imports
-- **Dependencies:** Needs ShadowCache SDK packages
-- **Mock Data:** Yes, but requires initialization
+- **Status:** ✅ Now works standalone!
+- **Dependencies:** None - uses mock implementations if packages not built
+- **Mock Data:** Yes, extensive mock data built-in
 - **Buttons:** 7 buttons with advanced features
 - **Features:**
   - All features from simple demo
@@ -32,8 +32,8 @@
   - Particle effects
   - Activity feed
   - Predictive caching visualization
-- **Best for:** Full feature showcase (after build)
-- **Requires:** `npm install` and `npm run build`
+- **Best for:** Full feature showcase with all visual effects
+- **Just open in browser!** (Will use real packages if built, mocks otherwise)
 
 ### 3. **demo-standalone.html**
 - **Status:** ✅ Working
