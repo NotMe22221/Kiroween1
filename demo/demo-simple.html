@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShadowCache Demo - Simple Version</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #fff;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .subtitle {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+    
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .response-box {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      margin-bottom: 15px;
+    }
+    
+    .status.online {
+      background: #10b981;
+    }
+    
+    .status.offline {
+      background: #ef4444;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2em;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌑 ShadowCache Demo</h1>
+      <p class="subtitle">Offline-First Caching with Mock Data</p>
+    </header>
+    
+    <div class="card">
+      <h2>📊 Status</h2>
+      <div class="controls">
+        <span id="status" class="status online">🟢 Online</span>
+        <button class="btn-secondary" onclick="toggleOffline()">Toggle Offline Mode</button>
+        <button class="btn-danger" onclick="clearCache()">Clear Cache</button>
+      </div>
+      
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Cached Items</div>
+          <div class="stat-value" id="cached-count">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cache Hits</div>
+          <div class="stat-value" id="cache-hits">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Requests</div>
+          <div class="stat-value" id="total-requests">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Hit Rate</div>
+          <div class="stat-value" id="hit-rate">0%</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>🧪 Test API Endpoints</h2>
+      <p style="margin-bottom: 20px; opacity: 0.9;">Click buttons to fetch mock data. Toggle offline to see caching in action!</p>
+      
+      <div class="button-grid">
+        <button onclick="fetchData('users')">👥 Fetch Users</button>
+        <button onclick="fetchData('posts')">📝 Fetch Posts</button>
+        <button onclick="fetchData('comments')">💬 Fetch Comments</button>
+        <button onclick="fetchData('products')">📦 Fetch Products</button>
+      </div>
+      
+      <h3 style="margin-top: 20px; margin-bottom: 10px;">Response:</h3>
+      <div id="response" class="response-box">Click a button to fetch data...</div>
+    </div>
+  </div>
+  
+  <script>
+    // Mock data store
+    const mockData = {
+      users: [
+        { id: 1, name: 'Alice Johnson', email: 'alice@shadowcache.dev', role: 'Admin', avatar: '👩‍💼' },
+        { id: 2, name: 'Bob Smith', email: 'bob@shadowcache.dev', role: 'Developer', avatar: '👨‍💻' },
+        { id: 3, name: 'Carol White', email: 'carol@shadowcache.dev', role: 'Designer', avatar: '👩‍🎨' },
+        { id: 4, name: 'David Chen', email: 'david@shadowcache.dev', role: 'DevOps', avatar: '👨‍🔧' },
+        { id: 5, name: 'Emma Davis', email: 'emma@shadowcache.dev', role: 'Product Manager', avatar: '👩‍💼' }
+      ],
+      posts: [
+        { id: 1, title: '🚀 Getting Started with ShadowCache', author: 'Alice Johnson', likes: 234, views: 1847 },
+        { id: 2, title: '🎯 Offline-First Development Best Practices', author: 'Bob Smith', likes: 189, views: 1523 },
+        { id: 3, title: '🧠 Predictive Caching Explained', author: 'Carol White', likes: 312, views: 2156 },
+        { id: 4, title: '🔄 Delta Synchronization Guide', author: 'David Chen', likes: 156, views: 1234 },
+        { id: 5, title: '💾 Storage Fallback Chains', author: 'Emma Davis', likes: 198, views: 1456 }
+      ],
+      comments: [
+        { id: 1, postId: 1, author: 'Bob Smith', text: 'Excellent guide! 🚀', likes: 12 },
+        { id: 2, postId: 1, author: 'Carol White', text: 'Very helpful, thanks!', likes: 8 },
+        { id: 3, postId: 2, author: 'Alice Johnson', text: 'Great points!', likes: 23 },
+        { id: 4, postId: 2, author: 'Emma Davis', text: 'Required reading! 💯', likes: 19 },
+        { id: 5, postId: 3, author: 'David Chen', text: 'Mind blown 🤯', likes: 31 }
+      ],
+      products: Array.from({ length: 20 }, (_, i) => ({
+        id: i + 1,
+        name: `Product ${i + 1}`,
+        price: (Math.random() * 500 + 10).toFixed(2),
+        category: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports'][i % 5],
+        inStock: Math.random() > 0.3,
+        rating: (Math.random() * 2 + 3).toFixed(1)
+      }))
+    };
+    
+    // State
+    let isOnline = true;
+    let cache = {};
+    let stats = {
+      cacheHits: 0,
+      totalRequests: 0
+    };
+    
+    // Fetch data function
+    async function fetchData(endpoint) {
+      stats.totalRequests++;
+      updateStats();
+      
+      const responseDiv = document.getElementById('response');
+      responseDiv.textContent = 'Loading...';
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, isOnline ? 500 : 100));
+      
+      if (!isOnline) {
+        // Try to get from cache
+        if (cache[endpoint]) {
+          stats.cacheHits++;
+          updateStats();
+          responseDiv.textContent = JSON.stringify(cache[endpoint], null, 2);
+          showNotification(`✅ Loaded ${endpoint} from cache (offline mode)`, 'success');
+          return;
+        } else {
+          responseDiv.textContent = `❌ Error: ${endpoint} not available offline`;
+          showNotification(`❌ ${endpoint} not cached`, 'error');
+          return;
+        }
+      }
+      
+      // Check cache first
+      if (cache[endpoint]) {
+        stats.cacheHits++;
+        updateStats();
+        responseDiv.textContent = JSON.stringify(cache[endpoint], null, 2);
+        showNotification(`✅ Loaded ${endpoint} from cache`, 'success');
+        return;
+      }
+      
+      // Fetch from mock data
+      const data = mockData[endpoint];
+      if (data) {
+        cache[endpoint] = data;
+        updateStats();
+        responseDiv.textContent = JSON.stringify(data, null, 2);
+        showNotification(`✅ Fetched ${endpoint} and cached`, 'success');
+      } else {
+        responseDiv.textContent = `❌ Error: Unknown endpoint '${endpoint}'`;
+        showNotification(`❌ Unknown endpoint`, 'error');
+      }
+    }
+    
+    // Toggle offline mode
+    function toggleOffline() {
+      isOnline = !isOnline;
+      const statusEl = document.getElementById('status');
+      if (isOnline) {
+        statusEl.className = 'status online';
+        statusEl.textContent = '🟢 Online';
+        showNotification('📡 Now online', 'info');
+      } else {
+        statusEl.className = 'status offline';
+        statusEl.textContent = '🔴 Offline';
+        showNotification('📴 Now offline', 'info');
+      }
+    }
+    
+    // Clear cache
+    function clearCache() {
+      cache = {};
+      stats = { cacheHits: 0, totalRequests: 0 };
+      updateStats();
+      document.getElementById('response').textContent = 'Cache cleared. Click a button to fetch data...';
+      showNotification('🗑️ Cache cleared', 'info');
+    }
+    
+    // Update stats display
+    function updateStats() {
+      document.getElementById('cached-count').textContent = Object.keys(cache).length;
+      document.getElementById('cache-hits').textContent = stats.cacheHits;
+      document.getElementById('total-requests').textContent = stats.totalRequests;
+      
+      const hitRate = stats.totalRequests > 0 
+        ? ((stats.cacheHits / stats.totalRequests) * 100).toFixed(1)
+        : 0;
+      document.getElementById('hit-rate').textContent = hitRate + '%';
+    }
+    
+    // Show notification
+    function showNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#6366f1'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+    
+    // Add animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize
+    updateStats();
+  </script>
+</body>
+</html>
