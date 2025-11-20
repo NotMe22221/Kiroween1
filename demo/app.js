@@ -3,28 +3,191 @@ import { ShadowCache } from '../packages/sdk/src/index.js';
 import { StorageManager } from '../packages/storage/src/index.js';
 import { DeltaSync } from '../packages/sync/src/index.js';
 
-// Mock data store for demo
+// Mock data store for demo - RICH, REALISTIC DATA!
 const mockDataStore = {
   users: [
-    { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin' },
-    { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User' },
-    { id: 3, name: 'Carol White', email: 'carol@example.com', role: 'User' }
+    { 
+      id: 1, 
+      name: 'Alice Johnson', 
+      email: 'alice.johnson@shadowcache.dev', 
+      role: 'Admin',
+      avatar: '👩‍💼',
+      joinDate: '2024-01-15',
+      lastActive: '2 hours ago',
+      stats: { posts: 42, comments: 156, likes: 892 },
+      bio: 'Lead developer passionate about offline-first architecture',
+      location: 'San Francisco, CA',
+      verified: true
+    },
+    { 
+      id: 2, 
+      name: 'Bob Smith', 
+      email: 'bob.smith@shadowcache.dev', 
+      role: 'Developer',
+      avatar: '👨‍💻',
+      joinDate: '2024-02-20',
+      lastActive: '5 minutes ago',
+      stats: { posts: 28, comments: 94, likes: 567 },
+      bio: 'Full-stack engineer exploring PWA technologies',
+      location: 'Austin, TX',
+      verified: true
+    },
+    { 
+      id: 3, 
+      name: 'Carol White', 
+      email: 'carol.white@shadowcache.dev', 
+      role: 'Designer',
+      avatar: '👩‍🎨',
+      joinDate: '2024-03-10',
+      lastActive: '1 hour ago',
+      stats: { posts: 35, comments: 128, likes: 743 },
+      bio: 'UX designer crafting beautiful offline experiences',
+      location: 'New York, NY',
+      verified: true
+    },
+    { 
+      id: 4, 
+      name: 'David Chen', 
+      email: 'david.chen@shadowcache.dev', 
+      role: 'DevOps',
+      avatar: '👨‍🔧',
+      joinDate: '2024-04-05',
+      lastActive: '30 minutes ago',
+      stats: { posts: 19, comments: 67, likes: 421 },
+      bio: 'Infrastructure engineer optimizing edge caching',
+      location: 'Seattle, WA',
+      verified: false
+    },
+    { 
+      id: 5, 
+      name: 'Emma Davis', 
+      email: 'emma.davis@shadowcache.dev', 
+      role: 'Product Manager',
+      avatar: '👩‍💼',
+      joinDate: '2024-05-12',
+      lastActive: '3 hours ago',
+      stats: { posts: 31, comments: 102, likes: 654 },
+      bio: 'PM driving offline-first product strategy',
+      location: 'Boston, MA',
+      verified: true
+    }
   ],
   posts: [
-    { id: 1, title: 'Getting Started with ShadowCache', author: 'Alice Johnson', content: 'Learn how to use ShadowCache...' },
-    { id: 2, title: 'Offline-First Development', author: 'Bob Smith', content: 'Best practices for offline apps...' },
-    { id: 3, title: 'Predictive Caching Explained', author: 'Carol White', content: 'How predictive caching works...' }
+    { 
+      id: 1, 
+      title: '🚀 Getting Started with ShadowCache: A Complete Guide', 
+      author: 'Alice Johnson',
+      authorAvatar: '👩‍💼',
+      category: 'Tutorial',
+      tags: ['beginner', 'setup', 'guide'],
+      publishDate: '2024-10-15',
+      readTime: '8 min read',
+      likes: 234,
+      views: 1847,
+      content: 'ShadowCache is revolutionizing offline-first development. In this comprehensive guide, we\'ll walk through everything you need to know to get started. From installation to your first cached resource, we\'ve got you covered. Learn about cache strategies, predictive intelligence, and delta synchronization...',
+      featured: true
+    },
+    { 
+      id: 2, 
+      title: '🎯 Offline-First Development: Best Practices for 2024', 
+      author: 'Bob Smith',
+      authorAvatar: '👨‍💻',
+      category: 'Best Practices',
+      tags: ['offline', 'pwa', 'architecture'],
+      publishDate: '2024-10-18',
+      readTime: '12 min read',
+      likes: 189,
+      views: 1523,
+      content: 'Building offline-first applications requires a shift in mindset. Instead of treating offline as an error state, we embrace it as a first-class experience. This article explores proven patterns, common pitfalls, and how ShadowCache makes offline-first development accessible to everyone...',
+      featured: true
+    },
+    { 
+      id: 3, 
+      title: '🧠 Predictive Caching Explained: How AI Learns Your Patterns', 
+      author: 'Carol White',
+      authorAvatar: '👩‍🎨',
+      category: 'Deep Dive',
+      tags: ['ai', 'ml', 'predictive', 'advanced'],
+      publishDate: '2024-10-20',
+      readTime: '15 min read',
+      likes: 312,
+      views: 2156,
+      content: 'Predictive caching uses machine learning to anticipate what resources users will need next. By analyzing navigation patterns and building a Markov chain model, ShadowCache can prefetch resources before they\'re requested. This deep dive explores the algorithms, confidence scoring, and real-world performance gains...',
+      featured: true
+    },
+    { 
+      id: 4, 
+      title: '🔄 Delta Synchronization: Syncing Smarter, Not Harder', 
+      author: 'David Chen',
+      authorAvatar: '👨‍🔧',
+      category: 'Technical',
+      tags: ['sync', 'optimization', 'bandwidth'],
+      publishDate: '2024-10-22',
+      readTime: '10 min read',
+      likes: 156,
+      views: 1234,
+      content: 'Traditional sync sends entire objects back and forth. Delta sync only transmits what changed. Using JSON Patch (RFC 6902), ShadowCache reduces bandwidth by up to 95% in typical scenarios. Learn how conflict resolution works and why delta sync is crucial for mobile users...',
+      featured: false
+    },
+    { 
+      id: 5, 
+      title: '💾 Storage Fallback Chains: Never Lose Your Data', 
+      author: 'Emma Davis',
+      authorAvatar: '👩‍💼',
+      category: 'Architecture',
+      tags: ['storage', 'reliability', 'fallback'],
+      publishDate: '2024-10-25',
+      readTime: '7 min read',
+      likes: 198,
+      views: 1456,
+      content: 'What happens when IndexedDB fails? ShadowCache automatically falls back to LocalStorage, then memory. This resilient architecture ensures your app works across all browsers and scenarios. We\'ll explore the fallback chain, quota management, and eviction policies...',
+      featured: false
+    },
+    { 
+      id: 6, 
+      title: '🎨 Building Beautiful Offline UIs with Shadow Mode', 
+      author: 'Carol White',
+      authorAvatar: '👩‍🎨',
+      category: 'Design',
+      tags: ['ui', 'ux', 'design', 'offline'],
+      publishDate: '2024-10-28',
+      readTime: '9 min read',
+      likes: 267,
+      views: 1789,
+      content: 'Offline doesn\'t mean ugly. Shadow Mode provides beautiful, themed UI components that make offline states feel intentional and polished. From status indicators to cache metadata displays, learn how to create offline experiences users will love...',
+      featured: false
+    }
   ],
   comments: [
-    { id: 1, postId: 1, author: 'Bob', text: 'Great article!' },
-    { id: 2, postId: 1, author: 'Carol', text: 'Very helpful, thanks!' },
-    { id: 3, postId: 2, author: 'Alice', text: 'Excellent points!' }
+    { id: 1, postId: 1, author: 'Bob Smith', avatar: '👨‍💻', text: 'Excellent guide! The step-by-step approach made it so easy to get started. Already using it in production! 🚀', timestamp: '2 hours ago', likes: 12 },
+    { id: 2, postId: 1, author: 'Carol White', avatar: '👩‍🎨', text: 'Very helpful, thanks! The examples were clear and the code snippets worked perfectly.', timestamp: '5 hours ago', likes: 8 },
+    { id: 3, postId: 1, author: 'David Chen', avatar: '👨‍🔧', text: 'Love how you explained the cache strategies. Network-first vs cache-first finally makes sense!', timestamp: '1 day ago', likes: 15 },
+    { id: 4, postId: 2, author: 'Alice Johnson', avatar: '👩‍💼', text: 'Excellent points! The offline-first mindset shift is crucial. Too many devs still treat it as an afterthought.', timestamp: '3 hours ago', likes: 23 },
+    { id: 5, postId: 2, author: 'Emma Davis', avatar: '👩‍💼', text: 'This should be required reading for all web developers. Offline-first is the future! 💯', timestamp: '6 hours ago', likes: 19 },
+    { id: 6, postId: 3, author: 'Bob Smith', avatar: '👨‍💻', text: 'Mind blown 🤯 I had no idea predictive caching could be this smart. The Markov chain explanation was perfect.', timestamp: '4 hours ago', likes: 31 },
+    { id: 7, postId: 3, author: 'David Chen', avatar: '👨‍🔧', text: 'The confidence scoring algorithm is genius. Seeing 20-30% bandwidth savings in our tests!', timestamp: '8 hours ago', likes: 27 },
+    { id: 8, postId: 4, author: 'Alice Johnson', avatar: '👩‍💼', text: 'Delta sync is a game-changer for mobile users. 95% bandwidth reduction is incredible!', timestamp: '1 hour ago', likes: 18 },
+    { id: 9, postId: 4, author: 'Carol White', avatar: '👩‍🎨', text: 'The conflict resolution strategies are well thought out. Server-wins vs client-wins makes sense now.', timestamp: '5 hours ago', likes: 14 },
+    { id: 10, postId: 5, author: 'Emma Davis', avatar: '👩‍💼', text: 'The fallback chain saved us when Safari had IndexedDB issues. Brilliant architecture! 🎯', timestamp: '2 hours ago', likes: 22 }
   ],
   largeData: Array.from({ length: 100 }, (_, i) => ({
     id: i + 1,
-    data: `Item ${i + 1}`,
-    timestamp: Date.now(),
-    payload: 'x'.repeat(1000)
+    type: 'product',
+    name: `Product ${i + 1}`,
+    sku: `SKU-${String(i + 1).padStart(5, '0')}`,
+    category: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports'][i % 5],
+    price: (Math.random() * 500 + 10).toFixed(2),
+    inStock: Math.random() > 0.3,
+    rating: (Math.random() * 2 + 3).toFixed(1),
+    reviews: Math.floor(Math.random() * 1000),
+    description: `High-quality product with excellent features. Perfect for ${['professionals', 'enthusiasts', 'beginners', 'experts', 'everyone'][i % 5]}. Fast shipping available.`,
+    tags: ['popular', 'trending', 'new', 'sale', 'featured'].slice(0, Math.floor(Math.random() * 3) + 1),
+    timestamp: Date.now() - Math.floor(Math.random() * 86400000),
+    metadata: {
+      weight: `${(Math.random() * 5 + 0.5).toFixed(2)} lbs`,
+      dimensions: `${Math.floor(Math.random() * 20 + 5)}" x ${Math.floor(Math.random() * 15 + 3)}" x ${Math.floor(Math.random() * 10 + 2)}"`,
+      manufacturer: ['TechCorp', 'GlobalBrand', 'QualityMakers', 'InnovateCo', 'PremiumGoods'][i % 5]
+    }
   }))
 };
 
@@ -405,6 +568,72 @@ window.fetchData = async function(endpoint) {
   }
 };
 
+// Generate additional demo data on demand
+function generateAnalyticsData() {
+  return {
+    pageViews: Math.floor(Math.random() * 10000) + 5000,
+    uniqueVisitors: Math.floor(Math.random() * 5000) + 2000,
+    avgSessionDuration: `${Math.floor(Math.random() * 10) + 3}m ${Math.floor(Math.random() * 60)}s`,
+    bounceRate: `${(Math.random() * 30 + 20).toFixed(1)}%`,
+    topPages: [
+      { page: '/home', views: 3421, avgTime: '2m 34s' },
+      { page: '/products', views: 2876, avgTime: '4m 12s' },
+      { page: '/about', views: 1543, avgTime: '1m 45s' },
+      { page: '/contact', views: 987, avgTime: '1m 23s' },
+      { page: '/blog', views: 2134, avgTime: '5m 47s' }
+    ],
+    devices: {
+      mobile: '52%',
+      desktop: '38%',
+      tablet: '10%'
+    },
+    browsers: {
+      chrome: '64%',
+      safari: '21%',
+      firefox: '10%',
+      edge: '5%'
+    }
+  };
+}
+
+function generateNotifications() {
+  return [
+    { id: 1, type: 'success', title: 'Cache Updated', message: 'Your data has been synchronized', time: '2m ago', read: false },
+    { id: 2, type: 'info', title: 'New Pattern Detected', message: 'Predictive engine learned a new navigation pattern', time: '15m ago', read: false },
+    { id: 3, type: 'warning', title: 'Storage at 75%', message: 'Consider clearing old cache entries', time: '1h ago', read: true },
+    { id: 4, type: 'success', title: 'Sync Complete', message: '42 items synchronized successfully', time: '2h ago', read: true },
+    { id: 5, type: 'info', title: 'Offline Mode', message: 'Application is now running offline', time: '3h ago', read: true }
+  ];
+}
+
+function generateSettings() {
+  return {
+    general: {
+      theme: 'dark',
+      language: 'en',
+      timezone: 'America/Los_Angeles',
+      notifications: true
+    },
+    cache: {
+      maxSize: '50 MB',
+      evictionPolicy: 'priority',
+      autoSync: true,
+      syncInterval: '5 minutes'
+    },
+    predictive: {
+      enabled: true,
+      learningRate: 0.8,
+      minConfidence: 0.6,
+      maxPrefetchSize: '5 MB'
+    },
+    security: {
+      encryption: true,
+      httpsOnly: true,
+      credentialCaching: false
+    }
+  };
+}
+
 // Mock fetch function
 async function mockFetch(endpoint) {
   const path = endpoint.replace('/api/', '');
@@ -413,6 +642,9 @@ async function mockFetch(endpoint) {
   if (path === 'posts') return mockDataStore.posts;
   if (path === 'comments') return mockDataStore.comments;
   if (path === 'large-data') return mockDataStore.largeData;
+  if (path === 'analytics') return generateAnalyticsData();
+  if (path === 'notifications') return generateNotifications();
+  if (path === 'settings') return generateSettings();
   
   throw new Error('Unknown endpoint');
 }
