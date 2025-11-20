@@ -253,6 +253,87 @@
     </div>
   </footer>
 
-  <script type="module" src="app.js"></script>
+  <script type="module">
+    // Try to import from packages, fall back to mock implementation
+    let ShadowCache, StorageManager, DeltaSync;
+    
+    try {
+      const sdk = await import('../packages/sdk/src/index.js');
+      const storage = await import('../packages/storage/src/index.js');
+      const sync = await import('../packages/sync/src/index.js');
+      
+      ShadowCache = sdk.ShadowCache;
+      StorageManager = storage.StorageManager;
+      DeltaSync = sync.DeltaSync;
+    } catch (error) {
+      console.log('Using mock implementations (packages not built)');
+      
+      // Mock implementations for standalone demo
+      ShadowCache = class {
+        static async init(config) {
+          return new ShadowCache(config);
+        }
+        async getStatus() {
+          return {
+            cachedResourceCount: Object.keys(window.mockCache || {}).length,
+            syncStatus: 'Ready'
+          };
+        }
+        async clearCache() {
+          window.mockCache = {};
+        }
+      };
+      
+      StorageManager = class {
+        constructor(config) {
+          this.storage = {};
+        }
+        async set(key, value, metadata) {
+          this.storage[key] = { value, metadata };
+          window.mockCache = this.storage;
+        }
+        async get(key) {
+          return this.storage[key] || null;
+        }
+        async clear() {
+          this.storage = {};
+          window.mockCache = {};
+        }
+        async getUsage() {
+          const used = JSON.stringify(this.storage).length;
+          return {
+            used,
+            total: 50 * 1024 * 1024,
+            byLevel: { indexeddb: 0, localstorage: 0, memory: used }
+          };
+        }
+      };
+      
+      DeltaSync = class {
+        constructor(config) {}
+        async sync() {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return {
+            synced: Math.floor(Math.random() * 10) + 5,
+            conflicts: Math.floor(Math.random() * 3),
+            bytesTransferred: Math.floor(Math.random() * 50000) + 10000,
+            duration: Math.floor(Math.random() * 500) + 200
+          };
+        }
+      };
+    }
+    
+    // Now load the main app with these implementations
+    window.ShadowCache = ShadowCache;
+    window.StorageManager = StorageManager;
+    window.DeltaSync = DeltaSync;
+    window.mockCache = {};
+    
+    // Load the app script
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'app.js';
+    document.body.appendChild(script);
+  </script>
 </body>
 </html>""

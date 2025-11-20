@@ -1,7 +1,8 @@
 // ShadowCache Demo Application
-import { ShadowCache } from '../packages/sdk/src/index.js';
-import { StorageManager } from '../packages/storage/src/index.js';
-import { DeltaSync } from '../packages/sync/src/index.js';
+// Use global implementations (either real packages or mocks)
+const ShadowCache = window.ShadowCache;
+const StorageManager = window.StorageManager;
+const DeltaSync = window.DeltaSync;
 
 // Mock data store for demo - RICH, REALISTIC DATA!
 const mockDataStore = {
